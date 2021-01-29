@@ -1,14 +1,14 @@
 Param(
     [parameter(Mandatory = $false)]
-    [string]$subscriptionName = "Microsoft Azure Sponsorship",
+    [string]$subscriptionName = "QBU-IM.SBox.Foglight.APM",
     [parameter(Mandatory = $false)]
-    [string]$resourceGroupName = "techtalksrg",
+    [string]$resourceGroupName = "rg-apm-devops-test",
     [parameter(Mandatory = $false)]
-    [string]$resourceGroupLocaltion = "South East Asia",
+    [string]$resourceGroupLocaltion = "East US",
     [parameter(Mandatory = $false)]
-    [string]$clusterName = "techtalksCluster",
+    [string]$clusterName = "test-cluster",
     [parameter(Mandatory = $false)]
-    [string]$dnsNamePrefix = "techtalksdns",
+    [string]$dnsNamePrefix = "jtang",
     [parameter(Mandatory = $false)]
     [int16]$workerNodeCount = 4, #minimum 4 nodes required for SQL 2019 HA setup
     [parameter(Mandatory = $false)]
@@ -36,8 +36,8 @@ az aks create `
     --dns-name-prefix=$dnsNamePrefix `
     --generate-ssh-keys `
     --node-vm-size=Standard_D2_v2 `
-    --kubernetes-version=$kubernetesVersion `
     --enable-addons http_application_routing
+#    --kubernetes-version=$kubernetesVersion `
 
 # Get credentials for newly created cluster
 Write-Host "Getting credentials for cluster $clusterName" -ForegroundColor Yellow
@@ -51,10 +51,13 @@ Write-Host "Creating cluster role binding for Kubernetes dashboard" -ForegroundC
 kubectl create clusterrolebinding kubernetes-dashboard -n kube-system --clusterrole=cluster-admin --serviceaccount=kube-system:kubernetes-dashboard
 
 Write-Host "Creating Tiller service account for Helm" -ForegroundColor Green
-Set-Location ~/projects/AKS-Learning-Series/Helm/
+
+$currentWorkingDirectory = (Get-Location).Path | Split-Path -Parent
+
+Set-Location "${currentWorkingDirectory}/helm/"
 kubectl apply -f .\helm-rbac.yaml
 
 Write-Host "Initializing Helm with Tiller service account" -ForegroundColor Green
 helm init --service-account tiller
 
-Set-Location ~/projects/AKS-Learning-Series/Powershell
+Set-Location "$currentWorkingDirectory/Powershell"

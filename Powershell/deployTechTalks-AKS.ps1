@@ -85,4 +85,4 @@ Write-Host "Tech talks web frontend deployed successfully" -ForegroundColor Cyan
 
 Write-Host "All the services related to Tech Talks application have been successfully deployed" -ForegroundColor Cyan
 
-Set-Location ~/projects/AKS-learning-series/Powershell
+Set-Location "$currentWorkingDirectory/Powershell"
